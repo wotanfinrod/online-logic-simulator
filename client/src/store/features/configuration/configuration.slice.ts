@@ -17,7 +17,6 @@ const initialState: ConfigurationState = {
     description: "React Template",
   },
 };
-export const submitTotp = createAction<string>("product/fetchProducts");
 
 const configurationSlice = createSlice({
   name: "product",

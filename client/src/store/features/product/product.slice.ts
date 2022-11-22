@@ -15,7 +15,6 @@ const initialState: ProductState = {
   products: [],
   categoryFilter: "",
 };
-export const submitTotp = createAction<string>("product/fetchProducts");
 
 const productSlice = createSlice({
   name: "product",

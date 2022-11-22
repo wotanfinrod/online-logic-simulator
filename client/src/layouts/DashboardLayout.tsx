@@ -5,6 +5,12 @@ import XOR from "@/assets/vectors/gates/XOR.svg";
 import io from "socket.io-client";
 import { useMouse } from "react-use";
 import { v4 as uuidv4 } from "uuid";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  addNewMovedUser,
+  setCurrentUsersPosition,
+} from "@/store/features/users/user.slice";
+import Cursor from "@/components/icons/Cursor";
 
 const socket = io("ws://localhost:8080/");
 
@@ -16,9 +22,6 @@ const DashobardWrapper = styled.div`
   width: 100%;
   height: 100%;
   & .mouse {
-    width: 50px;
-    height: 50px;
-    background-color: green;
     position: absolute;
     z-index: 2;
     top: 0;
@@ -62,21 +65,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [lastPong, setLastPong] = useState(null);
   const [mouse, setMouse] = useState([0, 0]);
-  const [userID, setUserID] = useState(null);
-  const [users, setUsers] = useState<MouseMoveEvent[]>([]);
+  const [userID, setUserID] = useState(() => uuidv4());
 
+  const currentUser = useAppSelector((state) => state.user.currentUser);
+  const users = useAppSelector((state) => state.user.movedUsers);
+  const dispatch = useAppDispatch();
   const ref = React.useRef(null);
 
   const { docX, docY } = useMouse(ref);
 
   useEffect(() => {
-    setMouse([docX, docY]);
+    dispatch(
+      setCurrentUsersPosition({ x: docX, y: docY, userID: currentUser.userID })
+    );
     socket.emit("mouseMove", { x: docX, y: docY, id: userID });
   }, [docX, docY]);
 
   useEffect(() => {
-    const userID = uuidv4();
-    setUserID(userID);
     socket.on("connect", () => {
       setIsConnected(true);
       socket.emit("mouseMove", { x: docX, y: docY, id: userID });
@@ -86,10 +91,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
     socket.on("mouseMove", (data: MouseMoveEvent) => {
       console.log("COMNMECTED_MOUSEMOVED", data);
-      console.log(data.userID === userID);
-      if (data.userID !== userID) {
-        setUsers((users) => [...users, data]);
-      }
+      dispatch(addNewMovedUser(data));
     });
   }, []);
 
@@ -114,7 +116,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             }}
             className="mouse"
           >
-            <h1>{user.userID}</h1>
+            <Cursor />
           </div>
         );
       })}
