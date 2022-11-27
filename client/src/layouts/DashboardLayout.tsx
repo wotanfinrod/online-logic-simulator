@@ -132,7 +132,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               className="mouse"
             >
               <Cursor />
-              {user.userID}
             </div>
           );
         }
