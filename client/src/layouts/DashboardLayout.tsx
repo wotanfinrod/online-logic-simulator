@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import LogicSimulator from "@/assets/vectors/LogicSimulator.svg";
+import AND from "@/assets/vectors/gates/AND.svg";
+import OR from "@/assets/vectors/gates/OR.svg";
+import NAND from "@/assets/vectors/gates/NAND.svg";
 import XOR from "@/assets/vectors/gates/XOR.svg";
+import NOR from "@/assets/vectors/gates/NOR.svg";
+import NOT from "@/assets/vectors/gates/NOT.svg";
+import XNOR from "@/assets/vectors/gates/XNOR.svg";
+
 import io from "socket.io-client";
 import { useMouse } from "react-use";
 import { v4 as uuidv4 } from "uuid";
@@ -17,6 +24,11 @@ const socket = io("ws://localhost:8080/");
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
+
+interface LogicGateProps{
+  gate : string;
+}
+
 const DashobardWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -97,7 +109,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
         <h4>Tools</h4>
         <div className="gate-wrapper">
-          <LogicGate /> <LogicGate />
+          <LogicGate gate= {AND} />
+          <LogicGate gate= {OR} />
+          <LogicGate gate= {NAND} />
+          <LogicGate gate= {XOR} />
+          <LogicGate gate= {XNOR} />
+          <LogicGate gate= {NOT} />
+          <LogicGate gate= {NOR} />
         </div>
       </DashboardSideBar>
       <DashboardContentWrapper>{children}</DashboardContentWrapper>
@@ -138,10 +156,10 @@ const LogicGateWrapper = styled.div`
   }
 `;
 
-const LogicGate = () => {
+const LogicGate = ({gate} : LogicGateProps) => {
   return (
     <LogicGateWrapper draggable>
-      <img src={XOR} width={"100px"} />
+      <img src={gate} width={"100px"} />
     </LogicGateWrapper>
   );
 };
