@@ -29,10 +29,10 @@ export function HomeLayout({ children }: HomeLayoutProps) {
     <>
       <HomeWrapper>
         <div className="navigation">
-          <Link to={"/dashboard/start"}> Dashboard </Link>
+          <Link to={"/dashboard/start"}> Dashboard</Link>
           <Link to={"/auth/login"}> Login </Link>
         </div>
-        <div>{children}</div>
+        <div>{children}</div>  
       </HomeWrapper>
     </>
   );

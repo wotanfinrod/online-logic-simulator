@@ -7,24 +7,24 @@ export interface MovedUser {
   userID: string;
 }
 
-interface ProductState {
+interface MovedUserState {
   movedUsers: MovedUser[];
   currentUser: MovedUser;
 }
-const currUser = { x: 0, y: 0, userID: uuidv4() };
-const initialState: ProductState = {
+const currUser : MovedUser = { x: 0, y: 0, userID: uuidv4() };
+const initialState: MovedUserState = {
   movedUsers: [currUser],
   currentUser: currUser,
 };
 
 const userSlice = createSlice({
-  name: "product",
+  name: "user",
   initialState,
   reducers: {
-    setMovedUsers(state: ProductState, action: PayloadAction<MovedUser[]>) {
+    setMovedUsers(state: MovedUserState, action: PayloadAction<MovedUser[]>) {
       state.movedUsers = action.payload;
     },
-    addNewMovedUser(state: ProductState, action: PayloadAction<MovedUser>) {
+    addNewMovedUser(state: MovedUserState, action: PayloadAction<MovedUser>) {
       const newUser = action.payload;
       const user = state.movedUsers.find(
         (user) => user.userID === newUser.userID
@@ -37,7 +37,7 @@ const userSlice = createSlice({
       }
     },
     setCurrentUsersPosition(
-      state: ProductState,
+      state: MovedUserState,
       action: PayloadAction<MovedUser>
     ) {
       const newUser = action.payload;

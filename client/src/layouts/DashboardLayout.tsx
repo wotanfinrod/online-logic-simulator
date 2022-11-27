@@ -62,11 +62,6 @@ type MouseMoveEvent = {
 };
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [lastPong, setLastPong] = useState(null);
-  const [mouse, setMouse] = useState([0, 0]);
-  const [userID, setUserID] = useState(() => uuidv4());
-
   const currentUser = useAppSelector((state) => state.user.currentUser);
   const users = useAppSelector((state) => state.user.movedUsers);
   const dispatch = useAppDispatch();
@@ -78,13 +73,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     dispatch(
       setCurrentUsersPosition({ x: docX, y: docY, userID: currentUser.userID })
     );
-    socket.emit("mouseMove", { x: docX, y: docY, id: userID });
+    socket.emit("mouseMove", { x: docX, y: docY, userID: currentUser.userID });
   }, [docX, docY]);
 
-  useEffect(() => {
+  useEffect(() => { //BUNLAR NE?
     socket.on("connect", () => {
-      setIsConnected(true);
-      socket.emit("mouseMove", { x: docX, y: docY, id: userID });
+      socket.emit("mouseMove", { x: docX, y: docY, userID: currentUser.userID });
 
       console.log("COMNMECTED");
     });
@@ -108,17 +102,22 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       </DashboardSideBar>
       <DashboardContentWrapper>{children}</DashboardContentWrapper>
       {users.map((user) => {
-        return (
-          <div
-            style={{
-              left: user.x,
-              top: user.y,
-            }}
-            className="mouse"
-          >
-            <Cursor />
-          </div>
-        );
+        if (user.userID !== currentUser.userID) {
+          console.log(user)
+          console.log(currentUser)
+          return (
+            <div
+              style={{
+                left: user.x,
+                top: user.y,
+              }}
+              className="mouse"
+            >
+              <Cursor />
+              {user.userID}
+            </div>
+          );
+        }
       })}
     </DashobardWrapper>
   );
