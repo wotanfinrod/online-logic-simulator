@@ -96,7 +96,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     });
 
     socket.on("mouseMove", (data: MouseMoveEvent) => {
-      console.log("COMNMECTED_MOUSEMOVED", data);
+      //console.log("COMNMECTED_MOUSEMOVED", data);
       dispatch(addNewMovedUser(data));
     });
   }, []);

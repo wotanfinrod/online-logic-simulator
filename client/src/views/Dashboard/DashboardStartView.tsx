@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useEdgesState } from 'react-flow-renderer';
 import ReactFlow, {
   addEdge,
   FitViewOptions,
@@ -11,17 +12,22 @@ import ReactFlow, {
   Connection,
   Background,
   MiniMap,
-  Controls
+  Controls,
+  useNodesState
 } from 'reactflow';
 
 type Props = {};
 
 const initialNodes: Node[] = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 5, y: 5 } },
+  { id: '1', data: { label: 'Node 1' }, position: { x: 5, y: 5 }, type: "input" },
   { id: '2', data: { label: 'Node 2' }, position: { x: 5, y: 100 } },
+  { id: '3', data: {label : 'Node 3'}, position: {x : 20, y : 5}}
 ];
 
-const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2' }];
+const initialEdges: Edge[] = [
+  { id: 'e1-2', source: '1', target: '2', animated : true },
+  { id: 'e1-3', source: '1', target: '3'}
+];
 
 const fitViewOptions: FitViewOptions = {
   padding: 0.2,
@@ -30,19 +36,11 @@ const fitViewOptions: FitViewOptions = {
 
 
 export default function DashboardStartView({}: Props) {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [nodes, ,onNodesChange] =useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [setNodes]
-  );
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setEdges]
-  );
   const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
     [setEdges]
   );
 
@@ -56,9 +54,10 @@ export default function DashboardStartView({}: Props) {
       fitView
       fitViewOptions={fitViewOptions}
     >
-    <Background></Background>
+      <Controls />
+
     </ReactFlow>
-    
+
   );
 
 
