@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useEdgesState } from 'react-flow-renderer';
+import AndNode from '@/components/Nodes/AndNode';
 import ReactFlow, {
   addEdge,
   FitViewOptions,
@@ -19,13 +20,13 @@ import ReactFlow, {
 type Props = {};
 
 const initialNodes: Node[] = [
-  { id: '1', data: { label: 'Node 1' }, position: { x: 5, y: 5 }, type: "input" },
+  { id: '1', data: { label: 'Node 1' }, position: { x: 5, y: 5 }, type: "and" },
   { id: '2', data: { label: 'Node 2' }, position: { x: 5, y: 100 } },
   { id: '3', data: {label : 'Node 3'}, position: {x : 20, y : 5}}
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2', animated : true },
+  { id: 'e1-2', source: '1', target: '2'},
   { id: 'e1-3', source: '1', target: '3'}
 ];
 
@@ -44,6 +45,10 @@ export default function DashboardStartView({}: Props) {
     [setEdges]
   );
 
+  const nodeTypes = {
+    and : AndNode
+  }
+
   return (
     <ReactFlow
       nodes={nodes}
@@ -53,6 +58,7 @@ export default function DashboardStartView({}: Props) {
       onConnect={onConnect}
       fitView
       fitViewOptions={fitViewOptions}
+      nodeTypes = {nodeTypes}
     >
       <Controls />
 
