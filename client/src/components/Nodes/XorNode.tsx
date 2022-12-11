@@ -2,11 +2,11 @@ import { memo } from "react";
 import { Handle, NodeProps, Position} from "reactflow";
 import "./NodeStyle.css"
 
-const HandleInput1Style = {top : 12};
-const HandleInput2Style = {top : 105};
-const HandleOutputStyle = {top : 59}
+const HandleInput1Style = {top : 10.5};
+const HandleInput2Style = {top : 104.5};
+const HandleOutputStyle = {top : 58.5}
 
-const OrNode = ({
+const XorNode = ({
   data,
   isConnectable,
   targetPosition = Position.Left,
@@ -16,7 +16,7 @@ const OrNode = ({
   targetPosition = Position.Left;
   sourcePosition = Position.Right;
   return (
-    <div className=  "or-node-div">
+    <div className=  "xor-node-div">
       <Handle
         type="target"
         position={targetPosition}
@@ -41,4 +41,4 @@ const OrNode = ({
   );
 };
 
-export default OrNode;
+export default XorNode;

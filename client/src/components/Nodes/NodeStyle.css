@@ -1,0 +1,55 @@
+.and-node-div{
+  background-image: url(../../assets/vectors/gates/AND.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 190px;
+  min-height: 115px;
+}
+
+.or-node-div{
+  background-image: url(../../assets/vectors/gates/OR.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 180px;
+  min-height: 115px;
+}
+
+.nand-node-div{
+  background-image: url(../../assets/vectors/gates/NAND.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 185px;
+  min-height: 115px;
+}
+
+.xor-node-div{
+  background-image: url(../../assets/vectors/gates/XOR.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 185px;
+  min-height: 115px;
+}
+
+.xnor-node-div{
+  background-image: url(../../assets/vectors/gates/XNOR.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 185px;
+  min-height: 115px;
+}
+
+.not-node-div{
+  background-image: url(../../assets/vectors/gates/NOT.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 185px;
+  min-height: 115px;
+}
+
+.nor-node-div{
+  background-image: url(../../assets/vectors/gates/NOR.svg);
+  background-size: auto;
+  background-repeat: no-repeat;
+  min-width: 185px;
+  min-height: 115px;
+}
