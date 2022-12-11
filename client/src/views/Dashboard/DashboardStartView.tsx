@@ -50,6 +50,17 @@ const fitViewOptions: FitViewOptions = {
 };
 
 
+const nodeTypes = {
+  and : AndNode,
+  or : OrNode,
+  nand : NandNode,
+  xor : XorNode,
+  xnor : XnorNode,
+  not : NotNode,
+  nor : NorNode
+}
+
+
 export default function DashboardStartView({}: Props) {
   const [nodes, ,onNodesChange] =useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -58,17 +69,6 @@ export default function DashboardStartView({}: Props) {
     (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
     [setEdges]
   );
-
-  const nodeTypes = {
-    and : AndNode,
-    or : OrNode,
-    nand : NandNode,
-    xor : XorNode,
-    xnor : XnorNode,
-    not : NotNode,
-    nor : NorNode
-  }
-
   return (
     <ReactFlow
       nodes={nodes}

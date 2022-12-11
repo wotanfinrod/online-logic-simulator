@@ -41,4 +41,4 @@ const OrNode = ({
   );
 };
 
-export default OrNode;
+export default memo(OrNode);

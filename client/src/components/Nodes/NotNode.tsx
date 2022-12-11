@@ -33,4 +33,4 @@ const NotNode = ({
   );
 };
 
-export default NotNode;
+export default memo(NotNode);

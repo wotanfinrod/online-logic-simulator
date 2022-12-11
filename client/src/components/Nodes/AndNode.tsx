@@ -39,4 +39,4 @@ const AndNode = ({
   );
 };
 
-export default AndNode;
+export default memo(AndNode);

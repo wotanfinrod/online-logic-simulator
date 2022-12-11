@@ -41,4 +41,4 @@ const XorNode = ({
   );
 };
 
-export default XorNode;
+export default memo(XorNode);

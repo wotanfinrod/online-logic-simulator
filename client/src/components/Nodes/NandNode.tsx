@@ -41,4 +41,4 @@ const NandNode = ({
   );
 };
 
-export default NandNode;
+export default memo(NandNode);

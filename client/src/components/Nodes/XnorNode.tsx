@@ -41,4 +41,4 @@ const XnorNode = ({
   );
 };
 
-export default XnorNode;
+export default memo(XnorNode);

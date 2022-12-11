@@ -41,4 +41,4 @@ const NorNode = ({
   );
 };
 
-export default NorNode;
+export default memo(NorNode);
