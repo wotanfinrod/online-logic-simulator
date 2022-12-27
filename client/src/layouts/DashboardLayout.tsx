@@ -19,6 +19,10 @@ import {
 } from "@/store/features/users/user.slice";
 import Cursor from "@/components/icons/Cursor";
 
+import { DndProvider, useDrag } from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import { monitorEventLoopDelay } from "perf_hooks";
+
 const socket = io("ws://localhost:8080/");
 
 interface DashboardLayoutProps {
@@ -102,7 +106,9 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, []);
 
   return (
+
     <DashobardWrapper ref={ref}>
+      <DndProvider backend= {HTML5Backend}>
       <DashboardSideBar>
         <div className="logo-container">
           <img width={100} src={LogicSimulator} />
@@ -136,6 +142,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           );
         }
       })}
+      </DndProvider>
     </DashobardWrapper>
   );
 }
@@ -156,9 +163,20 @@ const LogicGateWrapper = styled.div`
 `;
 
 const LogicGate = ({gate} : LogicGateProps) => {
+  const [{isDragging}, drag] = useDrag(() => ({
+    type: gate,
+    collect: (monitor ) => ({
+      isDragging: !!monitor.isDragging()
+    })
+  }))
   return (
-    <LogicGateWrapper draggable>
-      <img src={gate} width={"100px"} />
+    <LogicGateWrapper draggable style={{border: isDragging ? "3px solid black" : "0px"}}>
+      <img
+      ref={drag}
+         src={gate}
+         width={"100px"}
+
+      />
     </LogicGateWrapper>
   );
 };
