@@ -30,6 +30,7 @@ interface DashboardLayoutProps {
 }
 
 interface LogicGateProps{
+  gateId : number;
   gate : string;
 }
 
@@ -92,7 +93,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     socket.emit("mouseMove", { x: docX, y: docY, userID: currentUser.userID });
   }, [docX, docY]);
 
-  useEffect(() => { //BUNLAR NE?
+  useEffect(() => {
     socket.on("connect", () => {
       socket.emit("mouseMove", { x: docX, y: docY, userID: currentUser.userID });
 
@@ -106,22 +107,20 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }, []);
 
   return (
-
     <DashobardWrapper ref={ref}>
-      <DndProvider backend= {HTML5Backend}>
       <DashboardSideBar>
         <div className="logo-container">
           <img width={100} src={LogicSimulator} />
         </div>
         <h4>Tools</h4>
         <div className="gate-wrapper">
-          <LogicGate gate= {AND} />
-          <LogicGate gate= {OR} />
-          <LogicGate gate= {NAND} />
-          <LogicGate gate= {XOR} />
-          <LogicGate gate= {XNOR} />
-          <LogicGate gate= {NOT} />
-          <LogicGate gate= {NOR} />
+          <LogicGate gate= {AND}  gateId= {0} />
+          <LogicGate gate= {OR} gateId= {1}/>
+          <LogicGate gate= {NAND} gateId= {2}/>
+          <LogicGate gate= {XOR} gateId= {3}/>
+          <LogicGate gate= {XNOR} gateId= {4}/>
+          <LogicGate gate= {NOT} gateId= {5}/>
+          <LogicGate gate= {NOR} gateId= {6}/>
         </div>
       </DashboardSideBar>
       <DashboardContentWrapper>{children}</DashboardContentWrapper>
@@ -142,7 +141,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           );
         }
       })}
-      </DndProvider>
     </DashobardWrapper>
   );
 }
@@ -162,20 +160,20 @@ const LogicGateWrapper = styled.div`
   }
 `;
 
-const LogicGate = ({gate} : LogicGateProps) => {
+const LogicGate = ({gate, gateId} : LogicGateProps) => {
   const [{isDragging}, drag] = useDrag(() => ({
-    type: gate,
+    type: "gate",
+    item: {id: gateId},
     collect: (monitor ) => ({
       isDragging: !!monitor.isDragging()
-    })
-  }))
+    })}));
+  
   return (
     <LogicGateWrapper draggable style={{border: isDragging ? "3px solid black" : "0px"}}>
       <img
-      ref={drag}
+         ref={drag}
          src={gate}
          width={"100px"}
-
       />
     </LogicGateWrapper>
   );

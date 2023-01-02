@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
-import { useEdgesState } from 'react-flow-renderer';
+import { useState, useCallback, useEffect, useRef, LegacyRef } from 'react';
+import {useMouse} from 'react-use'
+import { ReactFlowProvider, useEdgesState } from 'react-flow-renderer';
 import AndNode from '@/components/Nodes/AndNode';
 import OrNode from '@/components/Nodes/OrNode';
 import ReactFlow, {
@@ -22,6 +23,11 @@ import XorNode from '@/components/Nodes/XorNode';
 import XnorNode from '@/components/Nodes/XnorNode';
 import NotNode from '@/components/Nodes/NotNode';
 import NorNode from '@/components/Nodes/NorNode';
+import { ReactFlowInstance } from 'react-flow-renderer';
+import { useDrop } from 'react-dnd';
+import { string } from 'zod';
+import styled from 'styled-components';
+import './DashboardStartView.css'
 
 type Props = {};
 
@@ -36,6 +42,12 @@ const initialNodes: Node[] = [
 
 ];
 
+const wrapperStyle =
+{
+  width: "100%",
+  height: "100%"
+}
+
 
 const initialEdges: Edge[] = [
   /*
@@ -49,6 +61,7 @@ const fitViewOptions: FitViewOptions = {
   includeHiddenNodes : true
 };
 
+const nodeNums = ["and", "or", "nand", "xor", "xnor", "not", "nor"];
 
 const nodeTypes = {
   and : AndNode,
@@ -60,22 +73,66 @@ const nodeTypes = {
   nor : NorNode
 }
 
+type MousePos = {x:number, y:number};
+
 
 export default function DashboardStartView({}: Props) {
-  const [nodes, ,onNodesChange] =useNodesState(initialNodes);
+  const [nodes,setNodes ,onNodesChange] =useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [mousePos, setMousePos] = useState<MousePos>();
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+
+  const [{isOver}, drop] = useDrop(() => ({
+    accept: "gate",
+    drop: (event,monitor ) => addNewNodeToBoard(event, monitor.getSourceClientOffset()),
+    collect: (monitor) => ({
+      isOver : !!monitor.isOver()
+    })  
+  }))
+
+  
+  const addNewNodeToBoard = (event,locations) => {
+    const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
+
+    setNodes((nodes) =>{
+      console.log(nodes);
+      return[
+        ...nodes,
+        {
+          id: Math.floor(Math.random()*10000).toString(),
+          type: nodeNums[event.id],
+          position: {x: locations.x - reactFlowBounds?.left, y: locations.y- reactFlowBounds?.top},
+          data:{label: ""}
+        }
+      ]
+    });
+
+
+    //const nodeTemplate = nodeTypes[nodeNums[id]];
+    
+
+
+    //console.log(nodeTemplate);
+
+  }
 
   const onConnect = useCallback(
     (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
     [setEdges]
   );
+
   return (
+    <ReactFlowProvider>
+    <div className='reactflow-wrapper' ref={reactFlowWrapper} style={wrapperStyle}>
     <ReactFlow
+      ref={drop}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      onInit = {setReactFlowInstance}
       fitView
       fitViewOptions={fitViewOptions}
       nodeTypes = {nodeTypes}
@@ -83,6 +140,9 @@ export default function DashboardStartView({}: Props) {
       <Controls />
       <Background/>
     </ReactFlow>
+    </div>
+    </ReactFlowProvider>
+
 
   );
 
