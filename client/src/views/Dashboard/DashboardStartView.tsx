@@ -80,7 +80,7 @@ export default function DashboardStartView({}: Props) {
   const [nodes,setNodes ,onNodesChange] =useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [mousePos, setMousePos] = useState<MousePos>();
-  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>(null);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
 
   const [{isOver}, drop] = useDrop(() => ({
@@ -92,17 +92,21 @@ export default function DashboardStartView({}: Props) {
   }))
 
   
-  const addNewNodeToBoard = (event,locations) => {
+  const addNewNodeToBoard =useCallback((event,locations) => {
     const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
+    console.log(reactFlowInstance)
+    const point = reactFlowInstance?.project(
+      {x: locations.x - reactFlowBounds?.left, y: locations.y- reactFlowBounds?.top}
+    );
+    const tmpPoint = {x:5, y:5};
 
     setNodes((nodes) =>{
-      console.log(nodes);
       return[
         ...nodes,
         {
           id: Math.floor(Math.random()*10000).toString(),
           type: nodeNums[event.id],
-          position: {x: locations.x - reactFlowBounds?.left, y: locations.y- reactFlowBounds?.top},
+          position: point,
           data:{label: ""}
         }
       ]
@@ -115,7 +119,7 @@ export default function DashboardStartView({}: Props) {
 
     //console.log(nodeTemplate);
 
-  }
+  },[reactFlowInstance]);
 
   const onConnect = useCallback(
     (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
