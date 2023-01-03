@@ -19,8 +19,6 @@ import {
 } from "@/store/features/users/user.slice";
 import Cursor from "@/components/icons/Cursor";
 
-import { DndProvider, useDrag } from "react-dnd";
-import {HTML5Backend} from "react-dnd-html5-backend";
 import { monitorEventLoopDelay } from "perf_hooks";
 
 const socket = io("ws://localhost:8080/");
@@ -160,21 +158,20 @@ const LogicGateWrapper = styled.div`
   }
 `;
 
+
+
 const LogicGate = ({gate, gateId} : LogicGateProps) => {
-  const [{isDragging}, drag] = useDrag(() => ({
-    type: "gate",
-    item: {id: gateId},
-    collect: (monitor ) => ({
-      isDragging: !!monitor.isDragging()
-    })}));
-  
-  return (
-    <LogicGateWrapper draggable style={{border: isDragging ? "3px solid black" : "0px"}}>
+  const OnDragStart = (event: { dataTransfer: { setData: (arg0: string, arg1: any) => void; effectAllowed: string; }; }, gateId: number) => {
+    event.dataTransfer.setData('application/reactflow', gateId);
+    event.dataTransfer.effectAllowed = 'move';
+  }
+    return (
+    <LogicGateWrapper>
       <img
-         ref={drag}
+         onDragStart={(event) => OnDragStart(event, gateId)} draggable
          src={gate}
          width={"100px"}
       />
     </LogicGateWrapper>
   );
-};
+}

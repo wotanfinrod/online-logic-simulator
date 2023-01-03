@@ -24,7 +24,6 @@ import XnorNode from '@/components/Nodes/XnorNode';
 import NotNode from '@/components/Nodes/NotNode';
 import NorNode from '@/components/Nodes/NorNode';
 import { ReactFlowInstance } from 'react-flow-renderer';
-import { useDrop } from 'react-dnd';
 import { string } from 'zod';
 import styled from 'styled-components';
 import './DashboardStartView.css'
@@ -80,63 +79,61 @@ export default function DashboardStartView({}: Props) {
   const [nodes,setNodes ,onNodesChange] =useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [mousePos, setMousePos] = useState<MousePos>();
-  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>();
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-
-  const [{isOver}, drop] = useDrop(() => ({
-    accept: "gate",
-    drop: (event,monitor ) => addNewNodeToBoard(event, monitor.getSourceClientOffset()),
-    collect: (monitor) => ({
-      isOver : !!monitor.isOver()
-    })  
-  }))
-
-  
-  const addNewNodeToBoard =useCallback((event,locations) => {
-    const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
-    console.log(reactFlowInstance)
-    const point = reactFlowInstance?.project(
-      {x: locations.x - reactFlowBounds?.left, y: locations.y- reactFlowBounds?.top}
-    );
-    const tmpPoint = {x:5, y:5};
-
-    setNodes((nodes) =>{
-      return[
-        ...nodes,
-        {
-          id: Math.floor(Math.random()*10000).toString(),
-          type: nodeNums[event.id],
-          position: point,
-          data:{label: ""}
-        }
-      ]
-    });
-
-
-    //const nodeTemplate = nodeTypes[nodeNums[id]];
-    
-
-
-    //console.log(nodeTemplate);
-
-  },[reactFlowInstance]);
 
   const onConnect = useCallback(
     (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
     [setEdges]
   );
 
+  const onDragOver = useCallback((event: { preventDefault: () => void; dataTransfer: { dropEffect: string; }; }) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback(
+    (event: { preventDefault: () => void; dataTransfer: { getData: (arg0: string) => number; }; clientX: number; clientY: number; }) => {
+      event.preventDefault();
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      const nodeId: number = event.dataTransfer.getData('application/reactflow');
+
+      // check if the dropped element is valid
+      const gateType = nodeNums[nodeId];
+      console.log(reactFlowInstance);
+      
+      const position = reactFlowInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+
+      setNodes((nodes) =>{
+        return[
+          ...nodes,
+          {
+            id: Math.floor(Math.random()*10000).toString(),
+            type: gateType,
+            position,
+            data:{label: ""}
+          }
+        ]
+      });
+    },
+    [reactFlowInstance]
+  );
+
   return (
     <ReactFlowProvider>
     <div className='reactflow-wrapper' ref={reactFlowWrapper} style={wrapperStyle}>
     <ReactFlow
-      ref={drop}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       onInit = {setReactFlowInstance}
+      onDrop = {onDrop}
+      onDragOver = {onDragOver}
       fitView
       fitViewOptions={fitViewOptions}
       nodeTypes = {nodeTypes}

@@ -24,7 +24,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.4.3",
     "react-use": "^17.4.0",
-    "reactflow": "^11.3.1",
+    "reactflow": "^11.4.0",
     "socket.io-client": "^4.5.3",
     "styled-components": "^5.3.6",
     "uuid": "^9.0.0",
