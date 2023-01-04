@@ -11,9 +11,11 @@ export default function HomeView({}: Props) {
   return (
     <HomeLayout>
       <div>
-        <h1>HomeView</h1>
+        <span className="text-red-400 text-3xl bg-black dark:bg-red-400">
+          HO
+        </span>
         <p>{configuration.name}</p>
-        <p>Version: {configuration.version}</p>
+        <h1 className="text-3xl font-bold underline">Hello world!</h1>
       </div>
     </HomeLayout>
   );
