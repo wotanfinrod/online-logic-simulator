@@ -5,13 +5,13 @@ import { Link, Outlet } from "react-router-dom";
 
 export default function DashboardOutlet() {
   return (
-    <DndProvider backend= {HTML5Backend}>
+    <DndProvider backend={HTML5Backend}>
       <DashboardLayout>
-      Dashboard Layout
+        {/*       Dashboard Layout
       <Link to={"/"}> Home</Link>
       <Link to={"/dashboard/start"}> DashboardLayout</Link>
-      <Link to={"/auth/login"}> Login</Link>
-      <Outlet />
+      <Link to={"/auth/login"}> Login</Link> */}
+        <Outlet />
       </DashboardLayout>
     </DndProvider>
   );
